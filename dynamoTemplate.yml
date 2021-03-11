@@ -1,0 +1,11 @@
+Resources:
+  AudioTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: AudioTracks
+      AttributeDefinitions:
+        - AttributeName: "TrackName"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "TrackName"
+          KeyType: "HASH"
