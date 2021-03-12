@@ -11,4 +11,4 @@ def createBucket():
         print('bucket created')
         return myBucket
     except:
-        print('client and bucket exist')
+        print('bucket exists')

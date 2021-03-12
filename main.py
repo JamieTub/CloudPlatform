@@ -1,19 +1,19 @@
 #James Lawn S1918451
 
 import boto3
-import createS3bucket
-import createQueue
-import audioUpload
-
+import S3bucket
+import Queue
+import AudioUpload
 
 try:
     #creates and returns a bucket called 'myBucket'
-    createS3bucket
+    S3bucket.createBucket()
     #creates and returns a queue called 'myQueue'
-    createQueue
-    print(createQueue.getQueueName)
+    Queue.createQueue()
     #add audio file upload to the returned queue
-    #audioUpload.upload_file("","",None)
+    AudioUpload.upload_file("","",None)
 except:
     print("Error in creation of services")
+
+    #6026
 
