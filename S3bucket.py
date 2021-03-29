@@ -12,3 +12,6 @@ def createBucket():
         return myBucket
     except:
         print('bucket exists')
+
+def getBucketName():
+    return 'mybuckets1918451'

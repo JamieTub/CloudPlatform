@@ -24,3 +24,23 @@ def getQueueUrl():
         return myQueue['QueueUrl']
     except:
         print('Error attaining Queue')
+
+def sendSQSMessage(fileName):
+    sqs = boto3.client('sqs')
+    queueUrl = getQueueUrl()
+    print(queueUrl)
+
+    sqs.send_message(
+        QueueUrl = queueUrl,
+        MessageAttributes = {
+            'FileName': {
+                'DataType': 'String',
+                'StringValue': fileName
+            }
+        },
+        MessageBody = (
+            fileName
+        )
+    )
+
+    print('SQS Message Sent.')

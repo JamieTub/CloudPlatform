@@ -6,14 +6,12 @@ import Queue
 import AudioUpload
 
 try:
-    #creates and returns a bucket called 'myBucket'
+    #creates and returns a bucket called 'myBucket + studentId'
     S3bucket.createBucket()
-    #creates and returns a queue called 'myQueue'
+    #creates and returns a queue called 'myQueue + studentId'
     Queue.createQueue()
     #add audio file upload to the returned queue
-    AudioUpload.upload_file("","",None)
+    AudioUpload.fileUpload(S3bucket.getBucketName(),"./res/")
 except:
     print("Error in creation of services")
-
-    #6026
 

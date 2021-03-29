@@ -1,46 +1,47 @@
+from os import walk
+from re import T
 import boto3
 import logging
 from botocore.exceptions import ClientError
 import Queue
+import time
+import glob
 
 s3_client = boto3.client('s3')
-sqs = boto3.client('sqs')
+sqs_client = boto3.client('sqs')
 sns = boto3.client('sns')
 
-def upload_file(file_name, bucket_name, object_name=None):
-    print('audio called')
-    file_name = 'Audio1.mp3'
-    bucket_name = 'mybuckets1918451'
-    queueUrl = Queue.getQueueUrl()
-    print(queueUrl)
-    
-    if object_name is None:
-        object_name = file_name
+def fileUpload(bucketName, dir):
 
-    # Upload the file  
     try:
-        response = s3_client.upload_file(file_name, bucket_name, object_name)
-        if response == True:
-            sqsSendMessage = sqs.send_message(
-                QueueUrl=queueUrl,
-                DelaySeconds=10,
-                MessageAttributes={
-                    'Title': {
-                    'DataType': 'String',
-                    'StringValue': 'Audio Upload'
-                    }
-                },
-                MessageBody=(
-                'An audio file has been successfully uploaded.'
-                )
-            )
-        else:
-            print('error in sending success message')
-    except ClientError as e:
-        logging.error(e)
-        return False
-    return True
+        for f in range(5):
+            #give the file a file name for upload
+            file_name = "Audio" + str(f + 1) + ".mp3"
 
-# def handler(event, context):
-#     sourceKey = event['Records'][0]['s3']['object']['key']
-#     print(sourceKey)
+            #split the uploads by 30 seconds
+            if(f != 0):
+                time.sleep(30)
+
+            file = open(dir + file_name, 'rb')
+            print(file)
+
+            #upload the files to the bucket
+            response = s3_client.put_object(
+                Body=file,
+                Bucket = bucketName,
+                Key = file_name
+            )
+
+            print(file_name + " successfully uploaded.")
+            if(response):
+                Queue.sendSQSMessage(file_name)
+            else:
+                print("Error in file upload.")
+                
+        print("All files uploaded.")
+
+    except ClientError as err:
+        logging.error(err)
+        return False
+
+        
